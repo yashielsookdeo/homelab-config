@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - PUID=0
+      - PGID=0
+      - VERSION=docker
+    volumes:
+      - /portainer/Files/AppData/Config/Plex:/config
+      - /mnt/transporter/media:/media
+      - /mnt/transporter/downloads:/downloads
+      - /dev/shm:/transcode
+    ports:
+      - "32400:32400"    # Plex Web Interface and Streaming
+      - "32469:32469"    # DLNA/UPnP
+      - "3005:3005"      # Plex Companion
+      - "8324:8324"      # Plex Sync
+      - "32410-32414:32410-32414"  # Plex Discovery
+    restart: unless-stopped
+

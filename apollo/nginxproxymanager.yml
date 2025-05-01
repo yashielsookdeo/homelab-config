@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  nginx-proxy-manager:
+    image: 'docker.io/jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      # Public HTTP Port (receives traffic from the outside world)
+      - '80:80'
+      # Public HTTPS Port (receives traffic from the outside world)
+      - '443:443'
+      # Nginx Proxy Manager Admin UI Port
+      - '81:81'
+    volumes:
+      # Persists NPM data (configs, users, hosts) - relative path
+      - ./data:/data
+      # Persists Let's Encrypt SSL certificates - relative path
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      # Connect this service to the external network defined below
+      - media_net_external
+
+# Define the reference to the network created by media-stack-compose.yml
+networks:
+  media_net_external: # This is just a logical name used *within this file*
+    name: media-stack-network # This MUST exactly match the 'name' specified in media-stack-compose.yml
+    external: true # Crucial: Tells Docker Compose to use an existing network, not create a new one
