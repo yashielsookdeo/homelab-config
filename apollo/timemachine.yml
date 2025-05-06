@@ -1,37 +1,23 @@
 version: "3.7"
 
-# Create a custom network for the Time Machine services
 networks:
   timemachine_net:
     driver: bridge
 
 services:
-  # Single Time Machine service with multiple volumes
   time_machine:
-    # --- Image and Container Basics ---
     image: msjpq/time-machine
     container_name: time-machine
     restart: unless-stopped
-
-    # --- Networking ---
-    # Uses the host's network directly for zero-config Bonjour/mDNS discovery
-    # This is required for proper Time Machine discovery
+    # Required for proper Time Machine discovery
     network_mode: host
 
-    # --- Environment Variables (Configuration) ---
     environment:
-      # Set the name advertised on the network (visible on Macs)
       - SMB_NAME=Apollo Time Machine
-
-      # --- Credentials ---
       - SMB_USER=yashielsookdeo
       - SMB_PASSWORD=Schnapps@55#
-
-      # --- File Permissions ---
       - PUID=1000
       - PGID=1000
 
-    # --- Volumes ---
     volumes:
-      # Map both backup directories to subdirectories inside the container
       - /mnt/moving/timemachine:/share

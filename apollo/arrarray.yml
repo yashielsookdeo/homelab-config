@@ -11,50 +11,47 @@ services:
     volumes:
       - /portainer/Files/AppData/Config/prowlarr/data:/config
     ports:
-      # Expose port for direct access (optional if ONLY using NPM)
       - "9696:9696"
     networks:
-      - media_net # Connect to the network defined below
+      - media_net
     restart: unless-stopped
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
-      - PUID=0 # Consider changing to 1000 for better security
-      - PGID=0 # Consider changing to 1000 for better security
+      - PUID=0
+      - PGID=0
       - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/radarr/data:/config
       - /mnt/moving/media:/media
       - /mnt/moving/downloads:/downloads
     ports:
-      # Expose port for direct access (optional if ONLY using NPM)
       - "7878:7878"
     networks:
-      - media_net # Connect to the network defined below
+      - media_net
     restart: unless-stopped
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
-      - PUID=0 # Consider changing to 1000 for better security
-      - PGID=0 # Consider changing to 1000 for better security
+      - PUID=0
+      - PGID=0
       - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/sonarr/data:/config
       - /mnt/moving/media:/media
       - /mnt/moving/downloads:/downloads
     ports:
-      # Expose port for direct access (optional if ONLY using NPM)
       - "8989:8989"
     networks:
-      - media_net # Connect to the network defined below
+      - media_net
     restart: unless-stopped
 
-# Define the shared network that NPM will also connect to
+# Shared network for media services
 networks:
-  media_net: # Internal name used within this compose file
+  media_net:
     driver: bridge
-    name: media-stack-network # Explicit name for the Docker network on the host
+    name: media-stack-network
