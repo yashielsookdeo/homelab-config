@@ -6,6 +6,8 @@ services:
     container_name: jellyfin
     user: 0:0
     network_mode: host
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
     volumes:
       - /portainer/Files/AppData/Config/Jellyfin:/config
       - /portainer/Files/AppData/Config/Jellyfin/cache:/cache
@@ -16,6 +18,7 @@ services:
       - PUID=0
       - PGID=0
       - JELLYFIN_PublishedServerUrl=http://192.168.8.250:8096
+      - JELLYFIN_HardwareAcceleration=qsv
     # Optional - may be necessary for docker healthcheck to pass if running in host network mode
     extra_hosts:
       - host.docker.internal:host-gateway
