@@ -26,8 +26,8 @@ services:
       - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/radarr/data:/config
-      - /mnt/transporter/media:/media
-      - /mnt/transporter/downloads:/downloads
+      - /mnt/moving/media:/media
+      - /mnt/moving/downloads:/downloads
     ports:
       # Expose port for direct access (optional if ONLY using NPM)
       - "7878:7878"
@@ -44,8 +44,8 @@ services:
       - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/sonarr/data:/config
-      - /mnt/transporter/media:/media
-      - /mnt/transporter/downloads:/downloads
+      - /mnt/moving/media:/media
+      - /mnt/moving/downloads:/downloads
     ports:
       # Expose port for direct access (optional if ONLY using NPM)
       - "8989:8989"

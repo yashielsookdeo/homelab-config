@@ -9,7 +9,7 @@ services:
       - TZ=Africa/Johannesburg # Your current timezone
     volumes:
       - /portainer/Files/AppData/Config/Transmission:/config # Change this to your docker config folder
-      - /mnt/transporter/downloads:/downloads
+      - /mnt/moving/downloads:/downloads
     ports:
       - 9091:9091 # Web UI port
       - 51413:51413 # Torrent port (TCP)

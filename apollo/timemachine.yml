@@ -1,42 +1,37 @@
-version: "3.7" # Or newer like "3.8"
+version: "3.7"
+
+# Create a custom network for the Time Machine services
+networks:
+  timemachine_net:
+    driver: bridge
 
 services:
+  # Single Time Machine service with multiple volumes
   time_machine:
     # --- Image and Container Basics ---
-    image: msjpq/time-machine       # Use the specified image
-    container_name: time-machine    # Give the container a specific name
-    restart: unless-stopped       # Restart policy
+    image: msjpq/time-machine
+    container_name: time-machine
+    restart: unless-stopped
 
     # --- Networking ---
-    # Uses the host's network directly. Required for zero-config Bonjour/mDNS discovery.
-    # NOTE: This means the container uses host ports directly (like 139, 445, 548, 5353).
-    # This WILL conflict if your host 'apollo' is already running Samba (smbd), Netatalk (afpd), or Avahi (avahi-daemon).
-    # Since you stopped smbd earlier, this might work now, but be aware of potential Avahi conflicts.
+    # Uses the host's network directly for zero-config Bonjour/mDNS discovery
+    # This is required for proper Time Machine discovery
     network_mode: host
 
     # --- Environment Variables (Configuration) ---
     environment:
       # Set the name advertised on the network (visible on Macs)
-      - SMB_NAME=Apollo Time Machine # Customize the name as desired
+      - SMB_NAME=Apollo Time Machine
 
-      # --- Credentials (IMPORTANT: CHANGE DEFAULTS!) ---
-      - SMB_USER=yashielsookdeo    # Choose a username for backups
-      - SMB_PASSWORD=Schnapps@55# # !! SET A STRONG, UNIQUE PASSWORD !!
-                                                # Avoid using 'dog' or simple passwords.
-                                                # Consider Docker Secrets or .env file for better security.
+      # --- Credentials ---
+      - SMB_USER=yashielsookdeo
+      - SMB_PASSWORD=Schnapps@55#
 
-      # --- File Permissions (IMPORTANT for Security) ---
-      # Run the internal process as a non-root user on the host.
-      # Match this to a user on your host 'apollo' that has write access to the volume path below.
-      # Often your main non-root user is 1000:1000. Check with `id $(whoami)` on the host.
+      # --- File Permissions ---
       - PUID=1000
       - PGID=1000
 
     # --- Volumes ---
     volumes:
-      # Map your desired host directory to the '/share' directory inside the container.
-      # This is where the backup data will be stored.
-      # IMPORTANT: You MUST create this directory on your host *before* starting!
-      - /mnt/transporter/timemachine:/share
-        # Ensure the directory /mnt/transporter/timemachine exists and the user/group defined by
-        # PUID/PGID (e.g., 1000:1000) has write permissions to it on the HOST machine 'apollo'.
+      # Map both backup directories to subdirectories inside the container
+      - /mnt/moving/timemachine:/share
