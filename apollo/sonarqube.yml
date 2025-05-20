@@ -1,87 +1,38 @@
-version: "3.8"
+version: "3"
 
 services:
-  # PostgreSQL Database for SonarQube
-  sonarqube-db:
-    image: postgres:15
-    container_name: sonarqube-db
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=sonar
-      - POSTGRES_PASSWORD=sonar
-      - POSTGRES_DB=sonar
-      - TZ=Africa/Johannesburg
-    volumes:
-      - sonarqube_db_data:/var/lib/postgresql/data
-    networks:
-      - sonarqube_net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sonar"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # SonarQube Server
   sonarqube:
-    image: sonarqube:10.6-community
-    container_name: sonarqube
-    restart: unless-stopped
+    image: sonarqube:lts-community
     depends_on:
-      - sonarqube-db
+      - sonar_db
     environment:
-      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube-db:5432/sonar
-      - SONAR_JDBC_USERNAME=sonar
-      - SONAR_JDBC_PASSWORD=sonar
-      - TZ=Africa/Johannesburg
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_logs:/opt/sonarqube/logs
-      - sonarqube_extensions:/opt/sonarqube/extensions
+      SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
     ports:
-      - "9000:9000"
-    networks:
-      - sonarqube_net
-    ulimits:
-      nofile:
-        soft: 65536
-        hard: 65536
-    # Required for production use
-    sysctls:
-      - vm.max_map_count=262144
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-      - "com.centurylinklabs.watchtower.scope=apollo"
+      - "9001:9000"
+    volumes:
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_temp:/opt/sonarqube/temp
 
-networks:
-  sonarqube_net:
-    name: sonarqube-network
-    driver: bridge
+  sonar_db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - sonar_db:/var/lib/postgresql
+      - sonar_db_data:/var/lib/postgresql/data
 
 volumes:
-  sonarqube_db_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /portainer/Files/AppData/Config/sonarqube/db
+  sonarqube_conf:
   sonarqube_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /portainer/Files/AppData/Config/sonarqube/data
-  sonarqube_logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /portainer/Files/AppData/Config/sonarqube/logs
   sonarqube_extensions:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /portainer/Files/AppData/Config/sonarqube/extensions
+  sonarqube_logs:
+  sonarqube_temp:
+  sonar_db:
+  sonar_db_data:
