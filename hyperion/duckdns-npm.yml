@@ -10,8 +10,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=your-subdomain # Your DuckDNS subdomain
-      - TOKEN=your-token # Your DuckDNS token
+      - SUBDOMAINS=skynerhouse # Your DuckDNS subdomain
+      - TOKEN=your-bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token
       - UPDATE_IP=ipv4 # Explicitly specify to update IPv4 address
       - LOG_FILE=true # Create a log file
       - EXTRA_PARAMS=--verbose # For more detailed logs
