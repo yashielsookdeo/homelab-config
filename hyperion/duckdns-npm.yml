@@ -10,7 +10,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=skynerhouse # Your DuckDNS subdomain
+      - SUBDOMAINS=skyner # Your DuckDNS subdomain
       - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token (removed 'your-' prefix)
       - LOG_FILE=true # Create a log file
       - VALIDATION=true # Add validation to ensure proper IP detection
