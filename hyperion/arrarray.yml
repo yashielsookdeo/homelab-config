@@ -4,13 +4,13 @@ services:
   # Download Client
   transmission:
     image: lscr.io/linuxserver/transmission:latest
-    container_name: transmission-hyperion
+    container_name: transmission
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
     volumes:
-      - /portainer/Files/AppData/Config/Transmission-Hyperion:/config
+      - /portainer/Files/AppData/Config/Transmission:/config
       - /mnt/nfs/download:/downloads
     ports:
       - 9091:9091 # Web UI
@@ -23,13 +23,13 @@ services:
   # Indexer Manager
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr-hyperion
+    container_name: prowlarr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
     volumes:
-      - /portainer/Files/AppData/Config/prowlarr-hyperion/data:/config
+      - /portainer/Files/AppData/Config/prowlarr/data:/config
     ports:
       - "9696:9696" # Standard port for Prowlarr
     networks:
@@ -39,13 +39,13 @@ services:
   # Movie Management
   radarr:
     image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr-hyperion
+    container_name: radarr
     environment:
       - PUID=0
       - PGID=0
       - TZ=Africa/Johannesburg
     volumes:
-      - /portainer/Files/AppData/Config/radarr-hyperion/data:/config
+      - /portainer/Files/AppData/Config/radarr/data:/config
       - /mnt/nfs/media:/media
       - /mnt/nfs/download:/downloads
     ports:
@@ -57,13 +57,13 @@ services:
   # TV Show Management
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
-    container_name: sonarr-hyperion
+    container_name: sonarr
     environment:
       - PUID=0
       - PGID=0
       - TZ=Africa/Johannesburg
     volumes:
-      - /portainer/Files/AppData/Config/sonarr-hyperion/data:/config
+      - /portainer/Files/AppData/Config/sonarr/data:/config
       - /mnt/nfs/media:/media
       - /mnt/nfs/download:/downloads
     ports:
@@ -75,13 +75,13 @@ services:
   # Subtitle Management
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr-hyperion
+    container_name: bazarr
     environment:
       - PUID=0
       - PGID=0
       - TZ=Africa/Johannesburg
     volumes:
-      - /portainer/Files/AppData/Config/bazarr-hyperion:/config
+      - /portainer/Files/AppData/Config/bazarr:/config
       - /mnt/nfs/media:/media
     ports:
       - 6767:6767 # Standard port for Bazarr

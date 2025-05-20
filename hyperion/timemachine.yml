@@ -3,7 +3,7 @@ version: "3.7"
 services:
   time_machine:
     image: msjpq/time-machine:latest
-    container_name: time-machine-hyperion
+    container_name: time-machine
     restart: unless-stopped
     # Required for proper Time Machine discovery
     network_mode: host

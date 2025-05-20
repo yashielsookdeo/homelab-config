@@ -3,7 +3,7 @@ version: '3.8'
 services:
   watchtower:
     image: containrrr/watchtower:latest
-    container_name: watchtower-hyperion
+    container_name: watchtower
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -38,7 +38,7 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: prometheus-hyperion
+    container_name: prometheus
     restart: unless-stopped
     environment:
       - TZ=Africa/Johannesburg
@@ -63,7 +63,7 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana-hyperion
+    container_name: grafana
     restart: unless-stopped
     volumes:
       - grafana_data:/var/lib/grafana
@@ -95,19 +95,19 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /portainer/Files/AppData/Config/watchtower-hyperion
+      device: /portainer/Files/AppData/Config/watchtower
   prometheus_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /portainer/Files/AppData/Config/prometheus-hyperion
+      device: /portainer/Files/AppData/Config/prometheus
   grafana_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /portainer/Files/AppData/Config/grafana-hyperion
+      device: /portainer/Files/AppData/Config/grafana
 
 configs:
   prometheus_config:
@@ -123,7 +123,7 @@ configs:
           bearer_token: your-secure-token-here
           static_configs:
             - targets:
-              - 'watchtower-hyperion:8080'
+              - 'watchtower:8080'
 
         - job_name: 'prometheus'
           scrape_interval: 10s
@@ -139,5 +139,5 @@ configs:
         - name: Prometheus
           type: prometheus
           access: proxy
-          url: http://prometheus-hyperion:9090
+          url: http://prometheus:9090
           isDefault: true

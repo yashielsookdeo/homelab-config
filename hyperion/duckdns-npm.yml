@@ -4,7 +4,7 @@ services:
   # DuckDNS service for automatic IP updates
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
-    container_name: duckdns-hyperion
+    container_name: duckdns
     network_mode: host # Using host network mode for better IP detection
     environment:
       - PUID=1000
@@ -18,13 +18,13 @@ services:
       - DETECTION_MODE=dig-opendns # Use OpenDNS for IP detection
       - EXTRA_PARAMS=--verbose # For more detailed logs
     volumes:
-      - /portainer/Files/AppData/Config/duckdns-hyperion:/config # Config storage
+      - /portainer/Files/AppData/Config/duckdns:/config # Config storage
     restart: unless-stopped
 
   # NGINX Proxy Manager
   nginx-proxy-manager:
     image: 'jc21/nginx-proxy-manager:latest'
-    container_name: nginx-proxy-manager-hyperion
+    container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
       - '80:80' # HTTP
@@ -40,8 +40,8 @@ services:
       - DB_MYSQL_PASSWORD=npm
       - DB_MYSQL_NAME=npm
     volumes:
-      - /portainer/Files/AppData/Config/npm-hyperion/data:/data # NPM data
-      - /portainer/Files/AppData/Config/npm-hyperion/letsencrypt:/etc/letsencrypt # SSL certs
+      - /portainer/Files/AppData/Config/npm/data:/data # NPM data
+      - /portainer/Files/AppData/Config/npm/letsencrypt:/etc/letsencrypt # SSL certs
     networks:
       - proxy_network
     depends_on:
@@ -50,7 +50,7 @@ services:
   # Database for NGINX Proxy Manager
   db:
     image: 'mariadb:latest'
-    container_name: npm-db-hyperion
+    container_name: npm-db
     restart: unless-stopped
     environment:
       - MYSQL_DATABASE=npm
@@ -59,7 +59,7 @@ services:
       - MYSQL_ROOT_PASSWORD=npm-root-password
       - TZ=Africa/Johannesburg
     volumes:
-      - /portainer/Files/AppData/Config/npm-hyperion/mysql:/var/lib/mysql
+      - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
     networks:
       - proxy_network
 

@@ -151,20 +151,20 @@ macOS backup solution:
    sudo mkdir -p /portainer/Files/AppData/Config/Jellyfin
    sudo mkdir -p /portainer/Files/AppData/Config/Jellyfin/cache
    sudo mkdir -p /portainer/Files/AppData/Config/Emby
-   sudo mkdir -p /portainer/Files/AppData/Config/Bazarr-hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/Bazarr
    sudo mkdir -p /portainer/Files/AppData/Config/Tautulli
    sudo mkdir -p /portainer/Files/AppData/Config/Overseerr
-   sudo mkdir -p /portainer/Files/AppData/Config/Transmission-Hyperion
-   sudo mkdir -p /portainer/Files/AppData/Config/prowlarr-hyperion/data
-   sudo mkdir -p /portainer/Files/AppData/Config/radarr-hyperion/data
-   sudo mkdir -p /portainer/Files/AppData/Config/sonarr-hyperion/data
-   sudo mkdir -p /portainer/Files/AppData/Config/watchtower-hyperion
-   sudo mkdir -p /portainer/Files/AppData/Config/prometheus-hyperion
-   sudo mkdir -p /portainer/Files/AppData/Config/grafana-hyperion
-   sudo mkdir -p /portainer/Files/AppData/Config/duckdns-hyperion
-   sudo mkdir -p /portainer/Files/AppData/Config/npm-hyperion/data
-   sudo mkdir -p /portainer/Files/AppData/Config/npm-hyperion/letsencrypt
-   sudo mkdir -p /portainer/Files/AppData/Config/npm-hyperion/mysql
+   sudo mkdir -p /portainer/Files/AppData/Config/Transmission
+   sudo mkdir -p /portainer/Files/AppData/Config/prowlarr/data
+   sudo mkdir -p /portainer/Files/AppData/Config/radarr/data
+   sudo mkdir -p /portainer/Files/AppData/Config/sonarr/data
+   sudo mkdir -p /portainer/Files/AppData/Config/watchtower
+   sudo mkdir -p /portainer/Files/AppData/Config/prometheus
+   sudo mkdir -p /portainer/Files/AppData/Config/grafana
+   sudo mkdir -p /portainer/Files/AppData/Config/duckdns
+   sudo mkdir -p /portainer/Files/AppData/Config/npm/data
+   sudo mkdir -p /portainer/Files/AppData/Config/npm/letsencrypt
+   sudo mkdir -p /portainer/Files/AppData/Config/npm/mysql
    ```
 
 ### Deployment
