@@ -6,6 +6,10 @@ services:
     container_name: nginx-proxy-manager
     restart: unless-stopped
     network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
     volumes:
       - ./data:/data # NPM data
       - ./letsencrypt:/etc/letsencrypt # SSL certs

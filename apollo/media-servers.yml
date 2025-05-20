@@ -11,6 +11,7 @@ services:
     environment:
       - PUID=0
       - PGID=0
+      - TZ=Africa/Johannesburg
       - VERSION=docker
       - PLEX_CLAIM=c
     volumes:
@@ -35,6 +36,7 @@ services:
     environment:
       - PUID=0
       - PGID=0
+      - TZ=Africa/Johannesburg
       - JELLYFIN_PublishedServerUrl=http://192.168.8.250:8096
       - JELLYFIN_HardwareAcceleration=qsv
     # For docker healthcheck in host network mode

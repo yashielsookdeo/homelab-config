@@ -55,6 +55,7 @@ services:
       - MYSQL_USER=npm
       - MYSQL_PASSWORD=npm
       - MYSQL_ROOT_PASSWORD=npm-root-password
+      - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
     networks:

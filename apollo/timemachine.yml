@@ -14,6 +14,7 @@ services:
       - SMB_PASSWORD=Schnapps@55#
       - PUID=1000
       - PGID=1000
+      - TZ=Africa/Johannesburg
 
     volumes:
       - /mnt/moving/timemachine:/share
