@@ -5,22 +5,19 @@ services:
   duckdns:
     image: lscr.io/linuxserver/duckdns:latest
     container_name: duckdns
+    network_mode: host # Using host network mode for better IP detection
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=your-subdomain # Your DuckDNS subdomain(s), comma separated if multiple
-      - TOKEN=your-token # Your DuckDNS token
-      - LOG_FILE=true # Recommended to create a log file
-      # Add IPv4 validation to ensure proper IP detection
-      - VALIDATION=true
-      # For more detailed logs during troubleshooting
-      - EXTRA_PARAMS=--verbose
+      - SUBDOMAINS=skyner # Your DuckDNS subdomain
+      - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token
+      - UPDATE_IP=ipv4 # Explicitly specify to update IPv4 address
+      - LOG_FILE=true # Create a log file
+      - EXTRA_PARAMS=--verbose # For more detailed logs
     volumes:
       - /portainer/Files/AppData/Config/duckdns:/config # Config storage
     restart: unless-stopped
-    networks:
-      - proxy_network
 
   # NGINX Proxy Manager
   nginx-proxy-manager:
@@ -47,7 +44,6 @@ services:
       - proxy_network
     depends_on:
       - db
-      - duckdns
 
   # Database for NGINX Proxy Manager
   db:
