@@ -15,3 +15,10 @@ services:
       - 51413:51413 # Torrent TCP
       - 51413:51413/udp # Torrent UDP
     restart: unless-stopped
+    networks:
+      - media_net
+
+networks:
+  media_net:
+    name: media-stack-network
+    external: true

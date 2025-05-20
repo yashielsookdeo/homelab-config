@@ -5,18 +5,7 @@ services:
     image: 'docker.io/jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: unless-stopped
-    ports:
-      - '80:80' # HTTP
-      - '443:443' # HTTPS
-      - '81:81' # Admin UI
+    network_mode: host
     volumes:
       - ./data:/data # NPM data
       - ./letsencrypt:/etc/letsencrypt # SSL certs
-    networks:
-      - media_net_external
-
-# Reference to external network
-networks:
-  media_net_external:
-    name: media-stack-network
-    external: true

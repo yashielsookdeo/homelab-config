@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  pingvin-share:
+    image: stonith404/pingvin-share:latest
+    container_name: pingvin-share
+    restart: unless-stopped
+    ports:
+      - 3001:3000
+    environment:
+      - TRUST_PROXY=false
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      # Application data
+      - /portainer/Files/AppData/Config/PingvinShare:/opt/app/backend/data
+      # Image storage
+      - /portainer/Files/AppData/Config/PingvinShare/images:/opt/app/frontend/public/img
+      # Main file storage locations using your mounts
+      - /mnt/flash/pingvin-share:/opt/app/backend/data/shares/flash
+      - /mnt/moving/pingvin-share:/opt/app/backend/data/shares/moving
+      # Optional: Uncomment to use a custom config file
+      # - ./config.yaml:/opt/app/config.yaml
+    networks:
+      - pingvin_net
+
+networks:
+  pingvin_net:
+    name: pingvin-share-network

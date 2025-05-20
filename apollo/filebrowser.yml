@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: filebrowser
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      # Only mount /mnt/moving as the root directory
+      - /mnt/moving:/srv
+      # Store database in a local directory
+      - ./data/filebrowser:/data
+    command: --database /data/filebrowser.db --root /srv
+    networks:
+      - filebrowser_net
+
+networks:
+  filebrowser_net:
+    name: filebrowser-network
