@@ -13,7 +13,7 @@ services:
       - PGID=0
       - TZ=Africa/Johannesburg
       - VERSION=docker
-      - PLEX_CLAIM=claim-xxxxxxxxxxxxxxxxxxxxx  # Replace with your actual claim code
+      - PLEX_CLAIM=claim-KaxXN4SRg1yTqA1B3ZBy  # Replace with your actual claim code
     volumes:
       - /portainer/Files/AppData/Config/Plex:/config
       - /mnt/nfs/media:/media
@@ -37,7 +37,7 @@ services:
       - PUID=0
       - PGID=0
       - TZ=Africa/Johannesburg
-      - JELLYFIN_PublishedServerUrl=http://192.168.8.251:8096  # Update with Hyperion's IP
+      - JELLYFIN_PublishedServerUrl=http://192.168.101.235:8096  # Update with Hyperion's IP
       - JELLYFIN_HardwareAcceleration=qsv
     # For docker healthcheck in host network mode
     extra_hosts:
