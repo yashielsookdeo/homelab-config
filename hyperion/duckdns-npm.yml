@@ -11,9 +11,11 @@ services:
       - PGID=1000
       - TZ=Africa/Johannesburg
       - SUBDOMAINS=skynerhouse # Your DuckDNS subdomain
-      - TOKEN=your-bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token
-      - UPDATE_IP=ipv4 # Explicitly specify to update IPv4 address
+      - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token (removed 'your-' prefix)
       - LOG_FILE=true # Create a log file
+      - VALIDATION=true # Add validation to ensure proper IP detection
+      # Use a specific IP detection method instead of CloudFlare
+      - DETECTION_MODE=dig-opendns # Use OpenDNS for IP detection
       - EXTRA_PARAMS=--verbose # For more detailed logs
     volumes:
       - /portainer/Files/AppData/Config/duckdns-hyperion:/config # Config storage
