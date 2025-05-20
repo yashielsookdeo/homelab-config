@@ -10,7 +10,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=skynerhouse # Your DuckDNS subdomain for Hyperion
+      - SUBDOMAINS=skyner # Your DuckDNS subdomain
       - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token
       - UPDATE_IP=ipv4 # Explicitly specify to update IPv4 address
       - LOG_FILE=true # Create a log file
@@ -64,4 +64,4 @@ services:
 networks:
   proxy_network:
     driver: bridge
-    name: hyperion-proxy-network
+    name: proxy-network
