@@ -1,6 +1,26 @@
 version: "3.8"
 
 services:
+  # Download Client
+  transmission:
+    image: lscr.io/linuxserver/transmission
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/Transmission:/config
+      - /mnt/moving/downloads:/downloads
+    ports:
+      - 9091:9091 # Web UI
+      - 51413:51413 # Torrent TCP
+      - 51413:51413/udp # Torrent UDP
+    networks:
+      - media_net
+    restart: unless-stopped
+
+  # Indexer Manager
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -16,6 +36,7 @@ services:
       - media_net
     restart: unless-stopped
 
+  # Movie Management
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -33,6 +54,7 @@ services:
       - media_net
     restart: unless-stopped
 
+  # TV Show Management
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
