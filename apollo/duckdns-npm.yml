@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  # DuckDNS service for automatic IP updates
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - SUBDOMAINS=your-subdomain # Replace with your DuckDNS subdomain(s), comma separated
+      - TOKEN=your-token # Replace with your DuckDNS token
+      - LOG_FILE=true # Recommended to create a log file
+    volumes:
+      - /portainer/Files/AppData/Config/duckdns:/config # Config storage
+    restart: unless-stopped
+    networks:
+      - proxy_network
+
+  # NGINX Proxy Manager
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - '80:80' # HTTP
+      - '443:443' # HTTPS
+      - '81:81' # Admin Web UI
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      - DB_MYSQL_HOST=db
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=npm
+      - DB_MYSQL_PASSWORD=npm
+      - DB_MYSQL_NAME=npm
+    volumes:
+      - /portainer/Files/AppData/Config/npm/data:/data # NPM data
+      - /portainer/Files/AppData/Config/npm/letsencrypt:/etc/letsencrypt # SSL certs
+    networks:
+      - proxy_network
+    depends_on:
+      - db
+      - duckdns
+
+  # Database for NGINX Proxy Manager
+  db:
+    image: 'mariadb:latest'
+    container_name: npm-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=npm
+      - MYSQL_USER=npm
+      - MYSQL_PASSWORD=npm
+      - MYSQL_ROOT_PASSWORD=npm-root-password
+    volumes:
+      - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    driver: bridge
+    name: proxy-network
