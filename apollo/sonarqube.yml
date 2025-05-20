@@ -3,12 +3,15 @@ version: "3"
 services:
   sonarqube:
     image: sonarqube:lts-community
+    container_name: sonarqube
     depends_on:
       - sonar_db
     environment:
       SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonar
       SONAR_JDBC_USERNAME: sonar
       SONAR_JDBC_PASSWORD: sonar
+      # Fix for permission issues
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: true
     ports:
       - "9001:9000"
     volumes:
@@ -17,9 +20,16 @@ services:
       - sonarqube_extensions:/opt/sonarqube/extensions
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_temp:/opt/sonarqube/temp
+    # Fix for ElasticSearch
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    restart: unless-stopped
 
   sonar_db:
     image: postgres:13
+    container_name: sonarqube-db
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
@@ -27,12 +37,20 @@ services:
     volumes:
       - sonar_db:/var/lib/postgresql
       - sonar_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   sonarqube_conf:
+    driver: local
   sonarqube_data:
+    driver: local
   sonarqube_extensions:
+    driver: local
   sonarqube_logs:
+    driver: local
   sonarqube_temp:
+    driver: local
   sonar_db:
+    driver: local
   sonar_db_data:
+    driver: local
