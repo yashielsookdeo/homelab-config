@@ -28,15 +28,19 @@ services:
     restart: unless-stopped
     # Run as root to avoid permission issues with ports 80/443
     user: root
-    ports:
-      - '80:80' # HTTP
-      - '443:443' # HTTPS
-      - '81:81' # Admin Web UI
+    # Use host networking
+    network_mode: host
+    # Ports are commented out because we're using host networking
+    # ports:
+    #   - '80:80' # HTTP
+    #   - '443:443' # HTTPS
+    #   - '81:81' # Admin Web UI
     environment:
       - PUID=0
       - PGID=0
       - TZ=Africa/Johannesburg
-      - DB_MYSQL_HOST=db
+      # Use localhost instead of container name for DB connection
+      - DB_MYSQL_HOST=127.0.0.1
       - DB_MYSQL_PORT=3306
       - DB_MYSQL_USER=npm
       - DB_MYSQL_PASSWORD=npm
@@ -44,8 +48,6 @@ services:
     volumes:
       - /portainer/Files/AppData/Config/npm/data:/data # NPM data
       - /portainer/Files/AppData/Config/npm/letsencrypt:/etc/letsencrypt # SSL certs
-    networks:
-      - proxy_network
     depends_on:
       - db
 
@@ -54,6 +56,10 @@ services:
     image: 'mariadb:latest'
     container_name: npm-db
     restart: unless-stopped
+    # Use host networking
+    network_mode: host
+    # Expose MySQL port on localhost only
+    command: --bind-address=127.0.0.1
     environment:
       - MYSQL_DATABASE=npm
       - MYSQL_USER=npm
@@ -64,10 +70,5 @@ services:
       - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
     # Ensure database has correct permissions
     user: "1000:1000"
-    networks:
-      - proxy_network
 
-networks:
-  proxy_network:
-    driver: bridge
-    name: hyperion-proxy-network
+# Networks section removed since all services use host networking
