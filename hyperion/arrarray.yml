@@ -1,0 +1,96 @@
+version: "3.8"
+
+services:
+  # Download Client
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission-hyperion
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/Transmission-Hyperion:/config
+      - /mnt/nfs/download:/downloads
+    ports:
+      - 9092:9091 # Web UI (changed from 9091 to avoid conflict)
+      - 51414:51413 # Torrent TCP (changed from 51413 to avoid conflict)
+      - 51414:51413/udp # Torrent UDP (changed from 51413 to avoid conflict)
+    networks:
+      - media_net
+    restart: unless-stopped
+
+  # Indexer Manager
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr-hyperion
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/prowlarr-hyperion/data:/config
+    ports:
+      - "9697:9696" # Changed from 9696 to avoid conflict
+    networks:
+      - media_net
+    restart: unless-stopped
+
+  # Movie Management
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr-hyperion
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/radarr-hyperion/data:/config
+      - /mnt/nfs/media:/media
+      - /mnt/nfs/download:/downloads
+    ports:
+      - "7879:7878" # Changed from 7878 to avoid conflict
+    networks:
+      - media_net
+    restart: unless-stopped
+
+  # TV Show Management
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr-hyperion
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/sonarr-hyperion/data:/config
+      - /mnt/nfs/media:/media
+      - /mnt/nfs/download:/downloads
+    ports:
+      - "8990:8989" # Changed from 8989 to avoid conflict
+    networks:
+      - media_net
+    restart: unless-stopped
+
+  # Subtitle Management
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr-hyperion
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/bazarr-hyperion:/config
+      - /mnt/nfs/media:/media
+    ports:
+      - 6768:6767 # Changed from 6767 to avoid conflict
+    restart: unless-stopped
+    networks:
+      - media_net
+
+# Shared network for media services
+networks:
+  media_net:
+    driver: bridge
+    name: hyperion-media-network

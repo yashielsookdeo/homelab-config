@@ -1,8 +1,53 @@
-# Hyperion Media Server Stack
+# Hyperion Homelab Configuration
 
-This directory contains Docker Compose configurations for the Hyperion media server setup. The configuration is designed to be deployed as a stack in Portainer.
+This directory contains Docker Compose configurations for the Hyperion server setup. All configurations are designed to be deployed as stacks in Portainer.
 
-## Media Server Stack
+## Directory Structure
+
+```
+hyperion/
+├── arrarray.yml         # Arr suite (Radarr, Sonarr, etc.) configuration
+├── duckdns-npm.yml      # DuckDNS and NGINX Proxy Manager configuration
+├── filebrowser.yml      # File Browser configuration
+├── media-servers.yml    # Media servers (Plex, Jellyfin, Emby) configuration
+├── timemachine.yml      # Time Machine backup configuration
+├── watchtower.yml       # Watchtower, Prometheus, and Grafana configuration
+└── README.md            # This file
+```
+
+## Storage Paths
+
+- Media files: `/mnt/nfs/media`
+- Downloads: `/mnt/nfs/download`
+- Configuration: `/portainer/Files/AppData/Config/`
+
+## Network Configuration
+
+All services use dedicated bridge networks to isolate traffic, except for:
+- Media servers (Plex, Jellyfin, Emby) use host networking for optimal performance
+- DuckDNS uses host networking for proper IP detection
+- Time Machine uses host networking for proper discovery
+
+## Service Ports
+
+All ports have been configured to avoid conflicts with the Apollo server:
+
+| Service                | Hyperion Port | Apollo Port |
+|------------------------|---------------|-------------|
+| File Browser           | 8082          | 8080        |
+| Watchtower             | 8083          | 8081        |
+| NGINX Proxy Manager    | 8084, 4443, 82| 80, 443, 81 |
+| Transmission           | 9092          | 9091        |
+| Prometheus             | 9093          | 9092        |
+| Prowlarr               | 9697          | 9696        |
+| Radarr                 | 7879          | 7878        |
+| Sonarr                 | 8990          | 8989        |
+| Bazarr                 | 6768          | 6767        |
+| Grafana                | 3002          | 3001        |
+
+## Stack Descriptions
+
+### Media Server Stack
 
 The `media-servers.yml` file includes the following services:
 
@@ -50,31 +95,80 @@ The `media-servers.yml` file includes the following services:
    - Web UI: http://[server-ip]:5055
    - Config location: `/portainer/Files/AppData/Config/Overseerr`
 
+## Additional Stacks
+
+### Arr Suite (arrarray.yml)
+
+Media management and download services:
+- Transmission (Download client)
+- Prowlarr (Indexer management)
+- Radarr (Movie management)
+- Sonarr (TV show management)
+- Bazarr (Subtitle management)
+
+### Watchtower (watchtower.yml)
+
+Container update and monitoring:
+- Watchtower (Automatic container updates)
+- Prometheus (Metrics collection)
+- Grafana (Metrics visualization)
+
+### DuckDNS and NGINX Proxy Manager (duckdns-npm.yml)
+
+Domain and proxy management:
+- DuckDNS (Dynamic DNS updates)
+- NGINX Proxy Manager (Reverse proxy)
+- MariaDB (Database for NGINX Proxy Manager)
+
+### File Browser (filebrowser.yml)
+
+Web-based file management:
+- File Browser (Web UI for file management)
+
+### Time Machine (timemachine.yml)
+
+macOS backup solution:
+- Time Machine (SMB-based backup for macOS)
+
 ## Setup Instructions
 
 ### Prerequisites
 
 1. Ensure Docker and Portainer are installed on your Hyperion server
-2. Make sure the NFS mount is properly set up at `/mnt/nfs/media`
+2. Make sure the NFS mounts are properly set up:
+   ```bash
+   sudo mkdir -p /mnt/nfs/media
+   sudo mkdir -p /mnt/nfs/download
+   ```
 3. Create the necessary configuration directories:
-
-```bash
-sudo mkdir -p /portainer/Files/AppData/Config/Plex
-sudo mkdir -p /portainer/Files/AppData/Config/Jellyfin
-sudo mkdir -p /portainer/Files/AppData/Config/Jellyfin/cache
-sudo mkdir -p /portainer/Files/AppData/Config/Emby
-sudo mkdir -p /portainer/Files/AppData/Config/Bazarr
-sudo mkdir -p /portainer/Files/AppData/Config/Tautulli
-sudo mkdir -p /portainer/Files/AppData/Config/Overseerr
-```
+   ```bash
+   sudo mkdir -p /portainer/Files/AppData/Config/Plex
+   sudo mkdir -p /portainer/Files/AppData/Config/Jellyfin
+   sudo mkdir -p /portainer/Files/AppData/Config/Jellyfin/cache
+   sudo mkdir -p /portainer/Files/AppData/Config/Emby
+   sudo mkdir -p /portainer/Files/AppData/Config/Bazarr-hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/Tautulli
+   sudo mkdir -p /portainer/Files/AppData/Config/Overseerr
+   sudo mkdir -p /portainer/Files/AppData/Config/Transmission-Hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/prowlarr-hyperion/data
+   sudo mkdir -p /portainer/Files/AppData/Config/radarr-hyperion/data
+   sudo mkdir -p /portainer/Files/AppData/Config/sonarr-hyperion/data
+   sudo mkdir -p /portainer/Files/AppData/Config/watchtower-hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/prometheus-hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/grafana-hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/duckdns-hyperion
+   sudo mkdir -p /portainer/Files/AppData/Config/npm-hyperion/data
+   sudo mkdir -p /portainer/Files/AppData/Config/npm-hyperion/letsencrypt
+   sudo mkdir -p /portainer/Files/AppData/Config/npm-hyperion/mysql
+   ```
 
 ### Deployment
 
 1. In Portainer, navigate to "Stacks"
 2. Click "Add stack"
-3. Name your stack (e.g., "hyperion-media")
-4. Paste the contents of `media-servers.yml`
-5. Update the Plex claim code and Jellyfin server URL
+3. Name your stack (e.g., "hyperion-media", "hyperion-arr", etc.)
+4. Paste the contents of the corresponding YAML file
+5. Update any necessary configuration values (like Plex claim code)
 6. Click "Deploy the stack"
 
 ## Configuration Notes

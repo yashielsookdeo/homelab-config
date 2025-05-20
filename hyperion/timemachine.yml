@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  time_machine:
+    image: msjpq/time-machine:latest
+    container_name: time-machine-hyperion
+    restart: unless-stopped
+    # Required for proper Time Machine discovery
+    network_mode: host
+
+    environment:
+      - SMB_NAME=Hyperion Time Machine
+      - SMB_USER=yashielsookdeo
+      - SMB_PASSWORD=Schnapps@55#
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Johannesburg
+      # Use a different port than Apollo to avoid conflicts
+      - AVAHI_PORT=10548
+
+    volumes:
+      - /mnt/nfs/media/timemachine:/share
