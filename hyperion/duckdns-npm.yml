@@ -10,7 +10,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=skyner # Your DuckDNS subdomain
+      - SUBDOMAINS=skyner # Your DuckDNS subdomain for Hyperion
       - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token
       - UPDATE_IP=ipv4 # Explicitly specify to update IPv4 address
       - LOG_FILE=true # Create a log file
@@ -19,49 +19,18 @@ services:
       - /portainer/Files/AppData/Config/duckdns:/config # Config storage
     restart: unless-stopped
 
-  # NGINX Proxy Manager
+  # NGINX Proxy Manager with SQLite (no external database needed)
   nginx-proxy-manager:
-    image: 'jc21/nginx-proxy-manager:latest'
+    image: 'jlesage/nginx-proxy-manager:latest' # Using jlesage image which supports SQLite
     container_name: nginx-proxy-manager
-    restart: unless-stopped
-    ports:
-      - '80:80' # HTTP
-      - '443:443' # HTTPS
-      - '81:81' # Admin Web UI
+    network_mode: host # Using host network mode for direct access
+    # No ports needed with host networking
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=0 # Run as root to bind to privileged ports
+      - PGID=0
       - TZ=Africa/Johannesburg
-      - DB_MYSQL_HOST=db
-      - DB_MYSQL_PORT=3306
-      - DB_MYSQL_USER=npm
-      - DB_MYSQL_PASSWORD=npm
-      - DB_MYSQL_NAME=npm
+      - USER_ID=1000 # Set user ID for file permissions
+      - GROUP_ID=1000 # Set group ID for file permissions
     volumes:
-      - /portainer/Files/AppData/Config/npm/data:/data # NPM data
-      - /portainer/Files/AppData/Config/npm/letsencrypt:/etc/letsencrypt # SSL certs
-    networks:
-      - proxy_network
-    depends_on:
-      - db
-
-  # Database for NGINX Proxy Manager
-  db:
-    image: 'mariadb:latest'
-    container_name: npm-db
+      - /portainer/Files/AppData/Config/npm:/config # All config in one directory
     restart: unless-stopped
-    environment:
-      - MYSQL_DATABASE=npm
-      - MYSQL_USER=npm
-      - MYSQL_PASSWORD=npm
-      - MYSQL_ROOT_PASSWORD=npm-root-password
-      - TZ=Africa/Johannesburg
-    volumes:
-      - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
-    networks:
-      - proxy_network
-
-networks:
-  proxy_network:
-    driver: bridge
-    name: proxy-network
