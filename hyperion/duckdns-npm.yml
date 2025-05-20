@@ -26,16 +26,15 @@ services:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: unless-stopped
-    # Use host networking to ensure proper connectivity
-    network_mode: host
-    # These ports are commented out because we're using host networking
-    # ports:
-    #   - '80:80' # HTTP
-    #   - '443:443' # HTTPS
-    #   - '81:81' # Admin Web UI
+    # Run as root to avoid permission issues with ports 80/443
+    user: root
+    ports:
+      - '80:80' # HTTP
+      - '443:443' # HTTPS
+      - '81:81' # Admin Web UI
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=0
+      - PGID=0
       - TZ=Africa/Johannesburg
       - DB_MYSQL_HOST=db
       - DB_MYSQL_PORT=3306
@@ -45,6 +44,8 @@ services:
     volumes:
       - /portainer/Files/AppData/Config/npm/data:/data # NPM data
       - /portainer/Files/AppData/Config/npm/letsencrypt:/etc/letsencrypt # SSL certs
+    networks:
+      - proxy_network
     depends_on:
       - db
 
@@ -61,6 +62,8 @@ services:
       - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
+    # Ensure database has correct permissions
+    user: "1000:1000"
     networks:
       - proxy_network
 
