@@ -184,10 +184,16 @@ macOS backup solution:
 - Replace `claim-xxxxxxxxxxxxxxxxxxxxx` with your actual claim code
 - The claim code is only valid for 4 minutes, so deploy quickly after generating it
 
+### Hardware Acceleration Note
+
+- Hyperion has a Matrox MGA G200e [Pilot] ServerEngines (SEP1) GPU
+- This GPU does not support hardware transcoding
+- All hardware acceleration has been disabled in the media server configurations
+- For heavy transcoding workloads, consider using direct play or pre-transcoding your media
+
 ### Jellyfin Media Server
 
-- Update the `JELLYFIN_PublishedServerUrl` with your Hyperion server's IP address
-- Hardware acceleration is set to use Intel QuickSync (QSV)
+- The `JELLYFIN_PublishedServerUrl` is set to Hyperion's IP address (192.168.101.235)
 
 ### Network Configuration
 

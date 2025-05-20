@@ -6,8 +6,7 @@ services:
     image: lscr.io/linuxserver/plex:latest
     container_name: plex
     network_mode: host
-    devices:
-      - /dev/dri:/dev/dri
+    # Removed hardware acceleration devices as Matrox MGA G200e doesn't support transcoding
     environment:
       - PUID=0
       - PGID=0
@@ -26,8 +25,7 @@ services:
     container_name: jellyfin
     user: 0:0
     network_mode: host
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
+    # Removed hardware acceleration devices as Matrox MGA G200e doesn't support transcoding
     volumes:
       - /portainer/Files/AppData/Config/Jellyfin:/config
       - /portainer/Files/AppData/Config/Jellyfin/cache:/cache
@@ -38,7 +36,8 @@ services:
       - PGID=0
       - TZ=Africa/Johannesburg
       - JELLYFIN_PublishedServerUrl=http://192.168.101.235:8096  # Update with Hyperion's IP
-      - JELLYFIN_HardwareAcceleration=qsv
+      # Removed hardware acceleration as Matrox MGA G200e doesn't support it
+      # - JELLYFIN_HardwareAcceleration=qsv
     # For docker healthcheck in host network mode
     extra_hosts:
       - host.docker.internal:host-gateway
