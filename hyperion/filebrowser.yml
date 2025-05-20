@@ -6,7 +6,7 @@ services:
     container_name: filebrowser
     restart: unless-stopped
     ports:
-      - 8082:80  # Changed from 8080 to avoid conflict with Apollo
+      - 8080:80  # Standard port for File Browser
     environment:
       - PUID=1000
       - PGID=1000

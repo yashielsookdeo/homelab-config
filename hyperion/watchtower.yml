@@ -9,7 +9,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - watchtower_data:/config
     ports:
-      - 8083:8080  # Changed from 8081 to avoid conflict with Apollo
+      - 8080:8080  # Standard port for Watchtower
     environment:
       - TZ=Africa/Johannesburg
       - PUID=1000
@@ -45,7 +45,7 @@ services:
     volumes:
       - prometheus_data:/prometheus
     ports:
-      - 9093:9090  # Changed to 9093 to avoid conflict with Apollo
+      - 9090:9090  # Standard port for Prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -68,7 +68,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     ports:
-      - 3002:3000  # Changed from 3001 to avoid conflict with Apollo
+      - 3000:3000  # Standard port for Grafana
     environment:
       - TZ=Africa/Johannesburg
       - GF_SECURITY_ADMIN_USER=admin
@@ -134,7 +134,7 @@ configs:
   grafana_datasource:
     content: |
       apiVersion: 1
-      
+
       datasources:
         - name: Prometheus
           type: prometheus

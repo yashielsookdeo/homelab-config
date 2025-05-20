@@ -13,9 +13,9 @@ services:
       - /portainer/Files/AppData/Config/Transmission-Hyperion:/config
       - /mnt/nfs/download:/downloads
     ports:
-      - 9092:9091 # Web UI (changed from 9091 to avoid conflict)
-      - 51414:51413 # Torrent TCP (changed from 51413 to avoid conflict)
-      - 51414:51413/udp # Torrent UDP (changed from 51413 to avoid conflict)
+      - 9091:9091 # Web UI
+      - 51413:51413 # Torrent TCP
+      - 51413:51413/udp # Torrent UDP
     networks:
       - media_net
     restart: unless-stopped
@@ -31,7 +31,7 @@ services:
     volumes:
       - /portainer/Files/AppData/Config/prowlarr-hyperion/data:/config
     ports:
-      - "9697:9696" # Changed from 9696 to avoid conflict
+      - "9696:9696" # Standard port for Prowlarr
     networks:
       - media_net
     restart: unless-stopped
@@ -49,7 +49,7 @@ services:
       - /mnt/nfs/media:/media
       - /mnt/nfs/download:/downloads
     ports:
-      - "7879:7878" # Changed from 7878 to avoid conflict
+      - "7878:7878" # Standard port for Radarr
     networks:
       - media_net
     restart: unless-stopped
@@ -67,7 +67,7 @@ services:
       - /mnt/nfs/media:/media
       - /mnt/nfs/download:/downloads
     ports:
-      - "8990:8989" # Changed from 8989 to avoid conflict
+      - "8989:8989" # Standard port for Sonarr
     networks:
       - media_net
     restart: unless-stopped
@@ -84,7 +84,7 @@ services:
       - /portainer/Files/AppData/Config/bazarr-hyperion:/config
       - /mnt/nfs/media:/media
     ports:
-      - 6768:6767 # Changed from 6767 to avoid conflict
+      - 6767:6767 # Standard port for Bazarr
     restart: unless-stopped
     networks:
       - media_net

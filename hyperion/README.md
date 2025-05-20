@@ -30,20 +30,25 @@ All services use dedicated bridge networks to isolate traffic, except for:
 
 ## Service Ports
 
-All ports have been configured to avoid conflicts with the Apollo server:
+Since Hyperion runs at a different location (IP: 192.168.101.235) than Apollo, standard ports are used:
 
-| Service                | Hyperion Port | Apollo Port |
-|------------------------|---------------|-------------|
-| File Browser           | 8082          | 8080        |
-| Watchtower             | 8083          | 8081        |
-| NGINX Proxy Manager    | 8084, 4443, 82| 80, 443, 81 |
-| Transmission           | 9092          | 9091        |
-| Prometheus             | 9093          | 9092        |
-| Prowlarr               | 9697          | 9696        |
-| Radarr                 | 7879          | 7878        |
-| Sonarr                 | 8990          | 8989        |
-| Bazarr                 | 6768          | 6767        |
-| Grafana                | 3002          | 3001        |
+| Service                | Port  | Description                |
+|------------------------|-------|----------------------------|
+| File Browser           | 8080  | Web-based file management  |
+| Watchtower             | 8080  | Container updates          |
+| NGINX Proxy Manager    | 80, 443, 81 | Reverse proxy (HTTP, HTTPS, Admin) |
+| Transmission           | 9091  | Download client            |
+| Prometheus             | 9090  | Metrics collection         |
+| Prowlarr               | 9696  | Indexer management         |
+| Radarr                 | 7878  | Movie management           |
+| Sonarr                 | 8989  | TV show management         |
+| Bazarr                 | 6767  | Subtitle management        |
+| Grafana                | 3000  | Metrics visualization      |
+| Plex                   | 32400 | Media server               |
+| Jellyfin               | 8096  | Media server               |
+| Emby                   | 8096  | Media server               |
+| Tautulli               | 8181  | Plex monitoring            |
+| Overseerr              | 5055  | Media requests             |
 
 ## Stack Descriptions
 

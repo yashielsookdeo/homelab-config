@@ -25,9 +25,9 @@ services:
     container_name: nginx-proxy-manager-hyperion
     restart: unless-stopped
     ports:
-      - '8084:80' # HTTP (changed from 80 to avoid conflict)
-      - '4443:443' # HTTPS (changed from 443 to avoid conflict)
-      - '82:81' # Admin Web UI (changed from 81 to avoid conflict)
+      - '80:80' # HTTP
+      - '443:443' # HTTPS
+      - '81:81' # Admin Web UI
     environment:
       - PUID=1000
       - PGID=1000
