@@ -21,7 +21,7 @@ services:
 
   # Jellyfin Media Server
   jellyfin:
-    image: jellyfin/jellyfin
+    image: jellyfin/jellyfin:latest
     container_name: jellyfin
     user: 0:0
     network_mode: host
