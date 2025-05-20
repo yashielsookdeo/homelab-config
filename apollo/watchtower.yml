@@ -22,13 +22,14 @@ services:
       - WATCHTOWER_HTTP_API_TOKEN=your-secure-token-here
       - WATCHTOWER_HTTP_API_METRICS=true
       - DOCKER_CONFIG=/config
+      - WATCHTOWER_LOG_LEVEL=info # Set log level to info instead of debug
       # Optional notification settings - uncomment and configure if needed
       # - WATCHTOWER_NOTIFICATIONS=shoutrrr
       # - WATCHTOWER_NOTIFICATION_REPORT=true
       # - WATCHTOWER_NOTIFICATION_LEVEL=info
       # - WATCHTOWER_NOTIFICATION_TEMPLATE="{{range .}}{{.Time.Format \"2006-01-02 15:04:05\"}} ({{.Level}}): {{.Message}}{{println}}{{end}}"
       # - WATCHTOWER_NOTIFICATION_URL=discord://token@channel
-    command: --debug
+    command: --interval 86400
     networks:
       - watchtower_net
     labels:
