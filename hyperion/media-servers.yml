@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  # Plex Media Server
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+      - VERSION=docker
+      - PLEX_CLAIM=claim-xxxxxxxxxxxxxxxxxxxxx  # Replace with your actual claim code
+    volumes:
+      - /portainer/Files/AppData/Config/Plex:/config
+      - /mnt/nfs/media:/media
+      - /dev/shm:/transcode
+    restart: unless-stopped
+
+  # Jellyfin Media Server
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: 0:0
+    network_mode: host
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    volumes:
+      - /portainer/Files/AppData/Config/Jellyfin:/config
+      - /portainer/Files/AppData/Config/Jellyfin/cache:/cache
+      - /mnt/nfs/media:/media
+    restart: unless-stopped
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+      - JELLYFIN_PublishedServerUrl=http://192.168.8.251:8096  # Update with Hyperion's IP
+      - JELLYFIN_HardwareAcceleration=qsv
+    # For docker healthcheck in host network mode
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  # Emby Media Server
+  emby:
+    image: lscr.io/linuxserver/emby:latest
+    container_name: emby
+    network_mode: host
+    devices:
+      - /dev/dri:/dev/dri
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/Emby:/config
+      - /mnt/nfs/media:/media
+    restart: unless-stopped
+
+  # Bazarr - Subtitle Management
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/Bazarr:/config
+      - /mnt/nfs/media:/media
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+    networks:
+      - media_net
+
+  # Tautulli - Plex Monitoring
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/Tautulli:/config
+    ports:
+      - 8181:8181
+    restart: unless-stopped
+    networks:
+      - media_net
+
+  # Overseerr - Media Request Management
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Africa/Johannesburg
+    volumes:
+      - /portainer/Files/AppData/Config/Overseerr:/config
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+    networks:
+      - media_net
+
+networks:
+  media_net:
+    driver: bridge
+    name: media-stack-network
