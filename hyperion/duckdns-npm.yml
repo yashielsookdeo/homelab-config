@@ -10,12 +10,10 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=skyner # Your DuckDNS subdomain
-      - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token (removed 'your-' prefix)
+      - SUBDOMAINS=skynerhouse # Your DuckDNS subdomain for Hyperion
+      - TOKEN=bc283b35-aaaa-4e72-896b-b026c6d3e985 # Your DuckDNS token
+      - UPDATE_IP=ipv4 # Explicitly specify to update IPv4 address
       - LOG_FILE=true # Create a log file
-      - VALIDATION=true # Add validation to ensure proper IP detection
-      # Use a specific IP detection method instead of CloudFlare
-      - DETECTION_MODE=dig-opendns # Use OpenDNS for IP detection
       - EXTRA_PARAMS=--verbose # For more detailed logs
     volumes:
       - /portainer/Files/AppData/Config/duckdns:/config # Config storage
@@ -26,21 +24,15 @@ services:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy-manager
     restart: unless-stopped
-    # Run as root to avoid permission issues with ports 80/443
-    user: root
-    # Use host networking
-    network_mode: host
-    # Ports are commented out because we're using host networking
-    # ports:
-    #   - '80:80' # HTTP
-    #   - '443:443' # HTTPS
-    #   - '81:81' # Admin Web UI
+    ports:
+      - '80:80' # HTTP
+      - '443:443' # HTTPS
+      - '81:81' # Admin Web UI
     environment:
-      - PUID=0
-      - PGID=0
+      - PUID=1000
+      - PGID=1000
       - TZ=Africa/Johannesburg
-      # Use localhost instead of container name for DB connection
-      - DB_MYSQL_HOST=127.0.0.1
+      - DB_MYSQL_HOST=db
       - DB_MYSQL_PORT=3306
       - DB_MYSQL_USER=npm
       - DB_MYSQL_PASSWORD=npm
@@ -48,6 +40,8 @@ services:
     volumes:
       - /portainer/Files/AppData/Config/npm/data:/data # NPM data
       - /portainer/Files/AppData/Config/npm/letsencrypt:/etc/letsencrypt # SSL certs
+    networks:
+      - proxy_network
     depends_on:
       - db
 
@@ -56,10 +50,6 @@ services:
     image: 'mariadb:latest'
     container_name: npm-db
     restart: unless-stopped
-    # Use host networking
-    network_mode: host
-    # Expose MySQL port on localhost only
-    command: --bind-address=127.0.0.1
     environment:
       - MYSQL_DATABASE=npm
       - MYSQL_USER=npm
@@ -68,7 +58,10 @@ services:
       - TZ=Africa/Johannesburg
     volumes:
       - /portainer/Files/AppData/Config/npm/mysql:/var/lib/mysql
-    # Ensure database has correct permissions
-    user: "1000:1000"
+    networks:
+      - proxy_network
 
-# Networks section removed since all services use host networking
+networks:
+  proxy_network:
+    driver: bridge
+    name: hyperion-proxy-network
