@@ -43,39 +43,6 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
 
-  # Emby Media Server
-  emby:
-    image: lscr.io/linuxserver/emby:latest
-    container_name: emby
-    network_mode: host
-    devices:
-      - /dev/dri:/dev/dri
-    environment:
-      - PUID=0
-      - PGID=0
-      - TZ=Africa/Johannesburg
-    volumes:
-      - /portainer/Files/AppData/Config/Emby:/config
-      - /mnt/nfs/media:/media
-    restart: unless-stopped
-
-  # Bazarr - Subtitle Management
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    environment:
-      - PUID=0
-      - PGID=0
-      - TZ=Africa/Johannesburg
-    volumes:
-      - /portainer/Files/AppData/Config/Bazarr:/config
-      - /mnt/nfs/media:/media
-    ports:
-      - 6767:6767
-    restart: unless-stopped
-    networks:
-      - media_net
-
   # Tautulli - Plex Monitoring
   tautulli:
     image: lscr.io/linuxserver/tautulli:latest
