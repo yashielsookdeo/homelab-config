@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - watchtower_data:/config
+    ports:
+      - 8081:8080  # Changed from 8080 to avoid conflict with filebrowser
+    environment:
+      - TZ=Africa/Johannesburg
+      - PUID=1000
+      - PGID=1000
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_REVIVE_STOPPED=true
+      - WATCHTOWER_POLL_INTERVAL=86400  # Check once per day
+      - WATCHTOWER_TIMEOUT=60s
+      - WATCHTOWER_HTTP_API_TOKEN=your-secure-token-here
+      - WATCHTOWER_HTTP_API_METRICS=true
+      - DOCKER_CONFIG=/config
+      # Optional notification settings - uncomment and configure if needed
+      # - WATCHTOWER_NOTIFICATIONS=shoutrrr
+      # - WATCHTOWER_NOTIFICATION_REPORT=true
+      # - WATCHTOWER_NOTIFICATION_LEVEL=info
+      # - WATCHTOWER_NOTIFICATION_TEMPLATE="{{range .}}{{.Time.Format \"2006-01-02 15:04:05\"}} ({{.Level}}): {{.Message}}{{println}}{{end}}"
+      # - WATCHTOWER_NOTIFICATION_URL=discord://token@channel
+    command: --debug
+    networks:
+      - watchtower_net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=apollo"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - prometheus_data:/prometheus
+    ports:
+      - 9092:9090  # Changed to 9092 to avoid conflict with both 9090 and 9091
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - watchtower_net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=apollo"
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - 3001:3000  # Changed from 3000 to avoid conflict with existing grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=secure-password-here
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    networks:
+      - watchtower_net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=apollo"
+    configs:
+      - source: grafana_datasource
+        target: /etc/grafana/provisioning/datasources/datasource.yml
+
+networks:
+  watchtower_net:
+    name: apollo-watchtower-network
+    driver: bridge
+
+volumes:
+  watchtower_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /portainer/Files/AppData/Config/watchtower
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /portainer/Files/AppData/Config/prometheus
+  grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /portainer/Files/AppData/Config/grafana
+
+configs:
+  prometheus_config:
+    content: |
+      global:
+        scrape_interval: 15s
+        evaluation_interval: 15s
+
+      scrape_configs:
+        - job_name: 'watchtower'
+          scrape_interval: 5s
+          metrics_path: /v1/metrics
+          bearer_token: your-secure-token-here
+          static_configs:
+            - targets:
+              - 'watchtower:8080'
+
+        - job_name: 'prometheus'
+          scrape_interval: 10s
+          static_configs:
+            - targets:
+              - 'localhost:9090'
+
+  grafana_datasource:
+    content: |
+      apiVersion: 1
+
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://prometheus:9090
+          isDefault: true
