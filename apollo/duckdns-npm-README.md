@@ -88,17 +88,51 @@ Default login credentials:
 
 ### DuckDNS Not Updating
 
-Check the logs:
-```bash
-docker logs duckdns
-```
+If you see errors like "Something went wrong" or "KO" in the logs:
+
+1. **Verify your token and subdomain**:
+   - Double-check that your DuckDNS token is correct
+   - Ensure your subdomain is spelled correctly
+   - Try logging into the DuckDNS website to confirm your credentials
+
+2. **Check IP detection**:
+   - The container might be having trouble detecting your public IP
+   - Add `VALIDATION=true` to the environment variables (already included in the updated config)
+   - You can also try specifying your IP manually with `SUBDOMAINS=subdomain,ipv4-address`
+
+3. **Check network connectivity**:
+   - Ensure the container can reach the DuckDNS servers (www.duckdns.org)
+   - Try running `docker exec -it duckdns ping www.duckdns.org`
+
+4. **Check the logs**:
+   ```bash
+   docker logs duckdns
+   ```
+
+5. **Check the update script**:
+   ```bash
+   docker exec -it duckdns cat /app/duck.sh
+   ```
 
 ### NGINX Proxy Manager Issues
 
-Check the logs:
-```bash
-docker logs nginx-proxy-manager
-```
+1. **Database connection issues**:
+   - Check if the MariaDB container is running: `docker ps | grep npm-db`
+   - Verify the database credentials in the docker-compose file
+
+2. **Permission issues**:
+   - Ensure the volume directories have the correct permissions
+   - Try: `sudo chown -R 1000:1000 /portainer/Files/AppData/Config/npm`
+
+3. **Check the logs**:
+   ```bash
+   docker logs nginx-proxy-manager
+   docker logs npm-db
+   ```
+
+4. **First-time setup issues**:
+   - If you can't access the admin interface, try restarting the container
+   - If the default credentials don't work, the database might not be initializing correctly
 
 ## Maintenance
 

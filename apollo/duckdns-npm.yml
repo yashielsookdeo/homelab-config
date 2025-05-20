@@ -9,9 +9,13 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Africa/Johannesburg
-      - SUBDOMAINS=your-subdomain # Replace with your DuckDNS subdomain(s), comma separated
-      - TOKEN=your-token # Replace with your DuckDNS token
+      - SUBDOMAINS=your-subdomain # Your DuckDNS subdomain(s), comma separated if multiple
+      - TOKEN=your-token # Your DuckDNS token
       - LOG_FILE=true # Recommended to create a log file
+      # Add IPv4 validation to ensure proper IP detection
+      - VALIDATION=true
+      # For more detailed logs during troubleshooting
+      - EXTRA_PARAMS=--verbose
     volumes:
       - /portainer/Files/AppData/Config/duckdns:/config # Config storage
     restart: unless-stopped
